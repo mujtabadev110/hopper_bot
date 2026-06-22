@@ -1,0 +1,199 @@
+<mujoco model="hopper_robot">
+
+    <compiler angle="degree"/>
+    <option timestep="0.002" gravity="0 0 -9.81"/>
+
+    <visual>
+        <quality shadowsize="4096"/>
+        <map znear="0.01" zfar="50"/>
+        <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0.1 0.1 0.1"/>
+    </visual>
+
+    <asset>
+
+        <!-- skybox -->
+        <texture name="sky_tex"
+                 type="skybox"
+                 builtin="gradient"
+                 rgb1="0.08 0.08 0.12"
+                 rgb2="0.35 0.20 0.10"
+                 width="512"
+                 height="512"/>
+
+        <!-- floor -->
+        <texture name="floor_tex"
+                 type="2d"
+                 builtin="checker"
+                 rgb1="0.18 0.18 0.18"
+                 rgb2="0.10 0.10 0.10"
+                 width="512"
+                 height="512"/>
+
+        <material name="floor_mat"
+                  texture="floor_tex"
+                  texrepeat="30 30"
+                  reflectance="0.25"
+                  specular="0.3"
+                  shininess="0.2"/>
+
+        <!-- Body materials -->
+        <material name="torso_mat"
+                  rgba="0.85 0.45 0.05 1"
+                  specular="0.6"
+                  shininess="0.5"
+                  reflectance="0.1"/>
+
+        <material name="limb_mat"
+                  rgba="0.20 0.55 0.75 1"
+                  specular="0.8"
+                  shininess="0.7"
+                  reflectance="0.15"/>
+
+        <material name="joint_mat"
+                  rgba="0.90 0.85 0.20 1"
+                  specular="1.0"
+                  shininess="0.9"
+                  reflectance="0.2"/>
+
+        <material name="foot_mat"
+                  rgba="0.95 0.30 0.15 1"
+                  specular="0.5"
+                  shininess="0.3"/>
+
+    </asset>
+
+    <default>
+        <joint damping="1"/>
+        <geom density="3000" friction="1 0.1 0.1"/>
+    </default>
+
+    <worldbody>
+
+        <!-- Key light -->
+        <light name="key"
+               pos="2 -2 8"
+               dir="-0.25 0.25 -1"
+               directional="true"
+               diffuse="1.0 0.95 0.85"
+               specular="0.4 0.4 0.35"
+               castshadow="true"/>
+
+        <!-- Fill light -->
+        <light name="fill"
+               pos="-3 3 5"
+               dir="0.4 -0.4 -1"
+               directional="true"
+               diffuse="0.25 0.30 0.40"
+               specular="0.05 0.05 0.1"
+               castshadow="false"/>
+
+        <!-- Ground -->
+        <geom name="ground"
+              type="plane"
+              size="15 15 0.1"
+              material="floor_mat"/>
+
+        <!-- ── TORSO (base body) ── -->
+        <body name="base" pos="0 0 1">
+
+            <joint name="x_slide"
+                   type="slide"
+                   axis="1 0 0"/>
+
+            <joint name="z_slide"
+                   type="slide"
+                   axis="0 0 1"/>
+
+            <!-- Main torso block -->
+            <geom type="capsule"
+                  size="0.09 0.12"
+                  pos="0 0 0"
+                  quat="0.707 0 0.707 0"
+                  material="torso_mat"/>
+
+            <!-- Hip pivot ring -->
+            <geom type="cylinder"
+                  size="0.05 0.045"
+                  pos="0 0 -0.10"
+                  quat="0.707 0.707 0 0"
+                  material="joint_mat"/>
+
+            <!-- ── THIGH ── -->
+            <body name="thigh"
+                  pos="0 0 -0.10"
+                  euler="0 -45 0">
+
+                <joint name="hip"
+                       type="hinge"
+                       axis="0 1 0"/>
+
+                <!-- Thigh capsule link -->
+                <geom type="capsule"
+                      size="0.035 0.23"
+                      pos="0 0 -0.25"
+                      material="limb_mat"/>
+
+                <!-- Upper knee ring -->
+                <geom type="cylinder"
+                      size="0.048 0.04"
+                      pos="0 0 0"
+                      quat="0.707 0.707 0 0"
+                      material="joint_mat"/>
+
+                <!-- Lower knee ring -->
+                <geom type="cylinder"
+                      size="0.048 0.04"
+                      pos="0 0 -0.5"
+                      quat="0.707 0.707 0 0"
+                      material="joint_mat"/>
+
+                <!-- ── SHIN ── -->
+                <body name="shin"
+                      pos="0 0 -0.5"
+                      euler="0 90 0">
+
+                    <joint name="knee"
+                           type="hinge"
+                           axis="0 1 0"/>
+
+                    <!-- Shin capsule link -->
+                    <geom type="capsule"
+                          size="0.030 0.23"
+                          pos="0 0 -0.25"
+                          material="limb_mat"/>
+
+                    <!-- Upper ankle ring -->
+                    <geom type="cylinder"
+                          size="0.042 0.04"
+                          pos="0 0 0"
+                          quat="0.707 0.707 0 0"
+                          material="joint_mat"/>
+
+                    <!-- Lower ankle ring -->
+                    <geom type="cylinder"
+                          size="0.042 0.04"
+                          pos="0 0 -0.5"
+                          quat="0.707 0.707 0 0"
+                          material="joint_mat"/>
+
+                    <!-- Foot contact sphere -->
+                    <geom name="foot"
+                          type="sphere"
+                          pos="0 0 -0.5"
+                          size="0.045"
+                          friction="2 0.1 0.1"
+                          material="foot_mat"/>
+
+                </body>
+            </body>
+
+        </body>
+
+    </worldbody>
+
+    <actuator>
+        <motor joint="hip"  gear="10"/>
+        <motor joint="knee" gear="10"/>
+    </actuator>
+
+</mujoco>
