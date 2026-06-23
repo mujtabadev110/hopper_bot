@@ -13,7 +13,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT_ROOT)
 
 from communication.protocol import RobotState
-
+from telemetry.logger import TelemetryLogger
 
 class HopperSimulator:
 
@@ -36,6 +36,9 @@ class HopperSimulator:
         self.data.qpos[self.qadr["knee"]] = 0.8
 
         mujoco.mj_forward(self.model, self.data)
+
+        #TELEMETRY LOGGER
+        self.logger = TelemetryLogger()
 
     async def run(self):
 
@@ -69,12 +72,24 @@ class HopperSimulator:
 
                 mujoco.mj_step(self.model, self.data)
 
+                self.logger.log(
+                    self.data.time,
+                    self.data.qpos[self.qadr["hip"]],
+                    self.data.qpos[self.qadr["knee"]],
+                    self.data.qvel[self.vadr["hip"]],
+                    self.data.qvel[self.vadr["knee"]],
+                    hip_tau,
+                    knee_tau
+                )
+
 
                 viewer.sync()
 
                 time.sleep(timestep)
 
             viewer.close()
+
+        self.logger.close()
 
 
 if __name__ == "__main__":
