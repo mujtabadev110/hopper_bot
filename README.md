@@ -79,6 +79,12 @@ The hopper is implemented in MuJoCo using XML and consists of:
 
 The robot generates hopping motion by applying torque commands to the hip and knee joints.
 
+<p align = "center">
+  <img src="docs/side_view.png" width="250"/>
+  <img src="docs/top_view.png" width="250"/>
+  <img src="docs/crouch_view.png" width="250"/>
+</p>
+
 ---
 
 ## 🔄 Communication Architecture
@@ -117,16 +123,16 @@ The simulator sends state information to the controller in JSON format:
   "hip_pos": -0.42,
   "knee_pos": 0.81,
   "hip_vel": 0.15,
-  "knee_vel": -0.20
+  "knee_vel": -0.2
 }
 ```
 
-| Field | Description |
-|---------|-------------|
-| `time` | Simulation time |
-| `hip_pos` | Hip joint angle |
-| `knee_pos` | Knee joint angle |
-| `hip_vel` | Hip joint velocity |
+| Field      | Description         |
+| ---------- | ------------------- |
+| `time`     | Simulation time     |
+| `hip_pos`  | Hip joint angle     |
+| `knee_pos` | Knee joint angle    |
+| `hip_vel`  | Hip joint velocity  |
 | `knee_vel` | Knee joint velocity |
 
 ### Torque Command Message
@@ -140,9 +146,9 @@ The controller computes torques and returns:
 }
 ```
 
-| Field | Description |
-|---------|-------------|
-| `hip_tau` | Hip motor torque |
+| Field      | Description       |
+| ---------- | ----------------- |
+| `hip_tau`  | Hip motor torque  |
 | `knee_tau` | Knee motor torque |
 
 ---
@@ -241,17 +247,22 @@ Generated visualizations include:
 
 These plots are useful for controller tuning and performance evaluation.
 
+<p align="center">
+  <img src="telemetry/plots/joint_positions.png" width="250"/>
+  <img src="telemetry/plots/joint_velocities.png" width="250"/>
+  <img src="telemetry/plots/joint_torques.png" width="250"/>
+</p>
 ---
 
 ## 🛠️ Technology Stack
 
-| Technology | Purpose |
-|------------|---------|
-| MuJoCo | Physics simulation |
-| Python | Core implementation |
-| NumPy | Numerical computation |
+| Technology | Purpose                 |
+| ---------- | ----------------------- |
+| MuJoCo     | Physics simulation      |
+| Python     | Core implementation     |
+| NumPy      | Numerical computation   |
 | WebSockets | Real-time communication |
-| Matplotlib | Data visualization |
+| Matplotlib | Data visualization      |
 
 ---
 
